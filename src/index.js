@@ -51,7 +51,7 @@ polling.on('message', async message => {
 
     const res = await bot.sendDocument({
         chat_id: message.chat.id,
-        document: 'http://localhost:8080/package.json'
+        document: 'https://resize-photo-bot.herokuapp.com/file.png'
     })
 
     if (!res.ok) {
