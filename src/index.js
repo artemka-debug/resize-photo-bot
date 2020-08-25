@@ -52,6 +52,7 @@ polling.on('message', async message => {
     const res = await bot.sendDocument({
         chat_id: message.chat.id,
         document: '/file.png'
+        
     })
 
     if (!res.ok) {
