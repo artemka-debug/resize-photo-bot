@@ -51,14 +51,14 @@ polling.on('message', async message => {
 
     const res = await bot.sendDocument({
         chat_id: message.chat.id,
-        document: 'https://resize-photo-bot.herokuapp.com/file.png'
+        document: '/file.png'
     })
 
     if (!res.ok) {
         bot.sendMessage({chat_id: message.chat.id, text: res.description})
     }
 
-    fs.unlink('file.jpg', function () {
+    fs.unlink('file.jpeg', function () {
         console.log('Succsecfully deleted');
     });
     fs.unlink('file.png', function () {
