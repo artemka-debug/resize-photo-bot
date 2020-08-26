@@ -5,7 +5,7 @@ const Kraken = require("kraken");
 const Jimp = require('jimp');
 const convertapi = require('convertapi')('PYCFytfnkGHPKMGY');
 const fs = require('fs');
-const botToken = '1313443151:AAGVVJsJm2ZS8X4KQTJEJt00WF-76oW__JY';
+const botToken = '1313443151:AAFyoTe-9Hr65vQcqnyFtKKDthplHOV6c8E';
 const pathToFile = `https://api.telegram.org/file/bot${botToken}`;
 const bot = new Bot(botToken);
 const app = express();
@@ -98,5 +98,5 @@ async function downloadImage(fileInfo, fileName) {
 }
 
 app.listen(process.env.PORT || 8080, () => {
-    console.log(`listening on port ${process.env.PORT}`);
+    console.log(`listening on port ${process.env.PORT || 8080}`);
 });
