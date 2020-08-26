@@ -97,6 +97,14 @@ async function downloadImage(fileInfo, fileName) {
     })
 }
 
+app.get('/', (req, res) => {
+    res.json({ping: Date.now()})
+});
+
+setInterval(() => {
+    axios.get('https://resize-photo-bot.herokuapp.com');
+}, 10000);
+
 app.listen(process.env.PORT || 8080, () => {
     console.log(`listening on port ${process.env.PORT || 8080}`);
 });
