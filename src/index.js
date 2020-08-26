@@ -19,9 +19,10 @@ const kraken = new Kraken({
     "api_secret": "6b80d397633e0daa95a759440127b6fe12712396"
 });
 
-app.use(express.static('/'));
+app.use(express.static('/app'));
 
 polling.on('message', async message => {
+    console.log('got message');
     const command = message.text;
 
     if (!message.photo) {
@@ -41,34 +42,47 @@ polling.on('message', async message => {
         return;
     }
 
+
+    const fileName =`${Date.now()}-${message.chat.id}`;
     try {
-        await downloadImage(fileInfo);
+        await downloadImage(fileInfo, fileName);
     } catch (e) {
         bot.sendMessage({chat_id: message.chat.id, text: e.response});
     }
+    console.log('after downloading file');
 
-    await Jimp.read('file.jpeg')
+    bot.sendMessage({chat_id: message.chat.id, text: `Starting converting file`});
+    await Jimp.read(`${fileName}.jpeg`)
         .then(lenna => {
             return lenna
                 .resize(512, 512)
-                .write('file.png');
+                .write(`${fileName}.png`);
         })
         .catch(err => {
-            console.error(err);
+            bot.sendMessage({chat_id: message.chat.id, text: 'Something went wrong with converting your file'});
         });
+    console.log('after converting file');
 
+    await bot.sendMessage({chat_id: message.chat.id, text: `Converted`});
     const response = await bot.sendDocument({
         chat_id: message.chat.id,
-        document: 'https://resize-photo-bot.herokuapp.com/file.png',
+        document: `https://artemka-debug-resize-photo-bot-1.glitch.me/${fileName}.png`,
     });
 
     if (!response.ok) {
         bot.sendMessage({chat_id: message.chat.id, text: response.description})
     }
+
+    fs.unlink(`${fileName}.png`, (err) => {
+        console.log(err ? err : 'error is not present');
+    });
+    fs.unlink(`${fileName}.jpeg`, (err) => {
+        console.log(err ? err : 'error is not present');
+    });
 });
 
-async function downloadImage(fileInfo) {
-    const file = fs.createWriteStream('file.jpeg');
+async function downloadImage(fileInfo, fileName) {
+    const file = fs.createWriteStream(`${fileName}.jpeg`);
     const photo = await axios({
         url: `${pathToFile}/${fileInfo.result.file_path}`,
         method: 'GET',
