@@ -66,7 +66,7 @@ polling.on('message', async message => {
     await bot.sendMessage({chat_id: message.chat.id, text: `Converted`});
     const response = await bot.sendDocument({
         chat_id: message.chat.id,
-        document: `https://artemka-debug-resize-photo-bot-1.glitch.me/${fileName}.png`,
+        document: `https://resize-photo-bot.herokuapp.com/${fileName}.png`,
     });
 
     if (!response.ok) {
