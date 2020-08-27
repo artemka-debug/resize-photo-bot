@@ -3,7 +3,6 @@ const axios = require('axios');
 const express = require('express');
 const Kraken = require("kraken");
 const Jimp = require('jimp');
-const convertapi = require('convertapi')('PYCFytfnkGHPKMGY');
 const fs = require('fs');
 const botToken = '1313443151:AAFyoTe-9Hr65vQcqnyFtKKDthplHOV6c8E';
 const pathToFile = `https://api.telegram.org/file/bot${botToken}`;
@@ -12,6 +11,7 @@ const app = express();
 const polling = bot.polling({
     limit: 50,
     timeout: 60,
+    allowedUpdates: []
 });
 
 const kraken = new Kraken({
