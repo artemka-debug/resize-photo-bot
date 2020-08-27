@@ -35,7 +35,6 @@ bot.on('message', async ctx => {
         });
 
     await ctx.reply(`Converted`);
-    await ctx.reply(fileName);
     try {
         await ctx.replyWithDocument(`https://resize-photo-bot.herokuapp.com/${fileName}.png`);
     } catch (e) {
