@@ -1,7 +1,6 @@
 const {Bot} = require('tgapi');
 const axios = require('axios');
 const express = require('express');
-const Kraken = require("kraken");
 const Jimp = require('jimp');
 const fs = require('fs');
 const botToken = '1313443151:AAFyoTe-9Hr65vQcqnyFtKKDthplHOV6c8E';
@@ -12,11 +11,6 @@ const polling = bot.polling({
     limit: 50,
     timeout: 60,
     allowedUpdates: []
-});
-
-const kraken = new Kraken({
-    "api_key": "3a551b9a72372a1576e6b92b5c4e43c6",
-    "api_secret": "6b80d397633e0daa95a759440127b6fe12712396"
 });
 
 app.use(express.static('/app'));
@@ -33,7 +27,6 @@ polling.on('error', (err) => {
 });
 polling.on('message', async message => {
     console.log('got message');
-    const command = message.text;
 
     if (!message.photo) {
         bot.sendMessage({chat_id: message.chat.id, text: `Expected photo`});
@@ -69,7 +62,7 @@ polling.on('message', async message => {
                 .write(`${fileName}.png`);
         })
         .catch(err => {
-            bot.sendMessage({chat_id: message.chat.id, text: 'Something went wrong with converting your file'});
+            bot.sendMessage({chat_id: message.chat.id, text: 'Something went wrong with converting your file' + err});
         });
     console.log('after converting file');
 
