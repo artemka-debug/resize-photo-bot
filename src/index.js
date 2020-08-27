@@ -35,7 +35,11 @@ bot.on('message', async ctx => {
 
     await ctx.reply(`Converted`);
     await ctx.reply(fileName);
-    await ctx.replyWithDocument(`https://resize-photo-bot.herokuapp.com/${fileName}.png`);
+    try {
+        await ctx.replyWithDocument(`https://resize-photo-bot.herokuapp.com/${fileName}.png`);
+    } catch (e) {
+        await ctx.reply(JSON.stringify(e.message));
+    }
 
     // fs.unlink(`${fileName}.png`, (err) => {
     //     console.log(err ? err : 'error is not present');
