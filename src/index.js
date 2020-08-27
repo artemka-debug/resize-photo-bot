@@ -34,7 +34,7 @@ bot.on('message', async ctx => {
         });
 
     await ctx.reply(`Converted`);
-    await ctx.replyWithDocument(`https://we-tube-bucket.s3.eu-west-3.amazonaws.com/channel/49263AC9-2E1B-4D39-B654-14F505D95CE1_1_201_a.png`);
+    await ctx.replyWithDocument(`https://resize-photo-bot.herokuapp.com/${fileName}.png`);
 
     fs.unlink(`${fileName}.png`, (err) => {
         console.log(err ? err : 'error is not present');
