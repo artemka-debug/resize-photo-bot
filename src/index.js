@@ -1,57 +1,28 @@
-const {Bot} = require('tgapi');
+const Telegraf = require('telegraf');
 const axios = require('axios');
 const express = require('express');
 const Jimp = require('jimp');
 const fs = require('fs');
 const botToken = '1313443151:AAFyoTe-9Hr65vQcqnyFtKKDthplHOV6c8E';
 const pathToFile = `https://api.telegram.org/file/bot${botToken}`;
-const bot = new Bot(botToken);
+const bot = new Telegraf(botToken);
 const app = express();
-const polling = bot.polling({
-    limit: Infinity
-});
 
-app.use(express.static('/app'));
-
-polling.on('update', (obj) => {
-    const file = fs.createWriteStream(`${Date.now()}-update.txt`);
-    file.write(`${new Date(Date.now()).toDateString()} ${JSON.stringify(obj)} \n`);
-    file.end();
-});
-polling.on('error', (err) => {
-    const file = fs.createWriteStream(`${Date.now()}-error.txt`);
-    file.write(`${new Date(Date.now()).toDateString()} ${JSON.stringify(err)} \n`);
-    file.end();
-});
-polling.on('message', async message => {
+bot.on('message', async ctx => {
     console.log('got message');
-    if (!message.photo) {
-        bot.sendMessage({chat_id: message.chat.id, text: `Expected photo`});
+    if (!ctx.updateSubTypes.includes('photo')) {
+        await ctx.reply('Expected photo');
         return;
     }
 
-    let fileInfo;
+    const fileName = `${Date.now()}`;
     try {
-        fileInfo = await bot.getFile({file_id: message.photo[message.photo.length - 1].file_id});
+        await downloadImage(ctx.message.photo[ctx.message.photo.length - 1].file_id, fileName, ctx);
     } catch (e) {
-        bot.sendMessage({chat_id: message.chat.id, text: e.response});
+        await ctx.reply(JSON.stringify(e.message));
     }
 
-    if (!fileInfo.ok) {
-        bot.sendMessage({chat_id: message.chat.id, text: `Something went wrong with getting photo`});
-        return;
-    }
-
-
-    const fileName = `${Date.now()}-${message.chat.id}`;
-    try {
-        await downloadImage(fileInfo, fileName);
-    } catch (e) {
-        bot.sendMessage({chat_id: message.chat.id, text: e.response});
-    }
-    console.log('after downloading file');
-
-    bot.sendMessage({chat_id: message.chat.id, text: `Starting converting file`});
+    await ctx.reply(`Starting converting file`);
     await Jimp.read(`${fileName}.jpeg`)
         .then(lenna => {
             return lenna
@@ -59,19 +30,11 @@ polling.on('message', async message => {
                 .write(`${fileName}.png`);
         })
         .catch(err => {
-            bot.sendMessage({chat_id: message.chat.id, text: 'Something went wrong with converting your file' + err});
+            ctx.reply(JSON.stringify(err.message));
         });
-    console.log('after converting file');
 
-    await bot.sendMessage({chat_id: message.chat.id, text: `Converted`});
-    const response = await bot.sendDocument({
-        chat_id: message.chat.id,
-        document: `https://resize-photo-bot.herokuapp.com/${fileName}.png`,
-    });
-
-    if (!response.ok) {
-        bot.sendMessage({chat_id: message.chat.id, text: response.description})
-    }
+    await ctx.reply(`Converted`);
+    await ctx.replyWithDocument(`https://we-tube-bucket.s3.eu-west-3.amazonaws.com/channel/49263AC9-2E1B-4D39-B654-14F505D95CE1_1_201_a.png`);
 
     fs.unlink(`${fileName}.png`, (err) => {
         console.log(err ? err : 'error is not present');
@@ -81,10 +44,19 @@ polling.on('message', async message => {
     });
 });
 
-async function downloadImage(fileInfo, fileName) {
+async function downloadImage(fileInfo, fileName, ctx) {
+    let res;
+
+    try {
+        res = await axios.get(`https://api.telegram.org/bot${botToken}/getFile?file_id=${fileInfo}`);
+    } catch (e) {
+        ctx.reply(JSON.stringify(e.message));
+        return
+    }
+
     const file = fs.createWriteStream(`${fileName}.jpeg`);
     const photo = await axios({
-        url: `${pathToFile}/${fileInfo.result.file_path}`,
+        url: `${pathToFile}/${res.data.result.file_path}`,
         method: 'GET',
         responseType: 'stream'
     });
@@ -97,6 +69,7 @@ async function downloadImage(fileInfo, fileName) {
     })
 }
 
+bot.launch();
 app.listen(process.env.PORT || 8080, () => {
     console.log(`listening on port ${process.env.PORT || 8080}`);
 });
