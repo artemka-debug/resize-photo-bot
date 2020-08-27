@@ -6,20 +6,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "startDev": "nodemon --watch src/index.js",
-    "start": "node -r esm src/index.js"
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.20.0",
-    "convertapi": "^1.5.0",
-    "esm": "^3.2.25",
     "express": "^4.17.1",
     "jimp": "^0.16.0",
-    "kraken": "^0.4.0",
     "nodemon": "^2.0.4",
-    "telegraf": "^3.38.0",
-    "tgapi": "^2.2.6"
+    "telegraf": "^3.38.0"
   }
 }
