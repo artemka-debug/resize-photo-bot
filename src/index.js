@@ -8,6 +8,7 @@ const pathToFile = `https://api.telegram.org/file/bot${botToken}`;
 const bot = new Telegraf(botToken);
 const app = express();
 
+app.use(express.static('/app'));
 bot.on('message', async ctx => {
     console.log('got message');
     if (!ctx.updateSubTypes.includes('photo')) {
@@ -36,14 +37,14 @@ bot.on('message', async ctx => {
     await ctx.reply(`Converted`);
     await ctx.reply(fileName);
     try {
-        await ctx.replyWithDocument(`https://resize-photo-bot.herokuapp.com/${fileName}.png`);
+        await ctx.replyWithDocument(` http://5731b376140e.ngrok.io/${fileName}.png`);
     } catch (e) {
         await ctx.reply(JSON.stringify(e.message));
     }
 
-    // fs.unlink(`${fileName}.png`, (err) => {
-    //     console.log(err ? err : 'error is not present');
-    // });
+    fs.unlink(`${fileName}.png`, (err) => {
+        console.log(err ? err : 'error is not present');
+    });
     fs.unlink(`${fileName}.jpeg`, (err) => {
         console.log(err ? err : 'error is not present');
     });
