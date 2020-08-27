@@ -34,11 +34,12 @@ bot.on('message', async ctx => {
         });
 
     await ctx.reply(`Converted`);
+    await ctx.reply(fileName);
     await ctx.replyWithDocument(`https://resize-photo-bot.herokuapp.com/${fileName}.png`);
 
-    fs.unlink(`${fileName}.png`, (err) => {
-        console.log(err ? err : 'error is not present');
-    });
+    // fs.unlink(`${fileName}.png`, (err) => {
+    //     console.log(err ? err : 'error is not present');
+    // });
     fs.unlink(`${fileName}.jpeg`, (err) => {
         console.log(err ? err : 'error is not present');
     });
