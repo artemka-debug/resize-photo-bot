@@ -21,6 +21,14 @@ const kraken = new Kraken({
 
 app.use(express.static('/app'));
 
+polling.on('update', (...args) => {
+    const file = fs.createWriteStream(`logs.txt`);
+    file.write(args);
+});
+polling.on('error', (...args) => {
+    const file = fs.createWriteStream(`logs.txt`);
+    file.write(args);
+});
 polling.on('message', async message => {
     console.log('got message');
     const command = message.text;
