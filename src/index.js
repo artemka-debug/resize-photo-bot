@@ -37,7 +37,7 @@ bot.on('message', async ctx => {
     await ctx.reply(`Converted`);
     await ctx.reply(fileName);
     try {
-        await ctx.replyWithDocument(` http://5731b376140e.ngrok.io/${fileName}.png`);
+        await ctx.replyWithDocument(`https://resize-photo-bot.herokuapp.com/${fileName}.png`);
     } catch (e) {
         await ctx.reply(JSON.stringify(e.message));
     }
