@@ -8,9 +8,7 @@ const pathToFile = `https://api.telegram.org/file/bot${botToken}`;
 const bot = new Bot(botToken);
 const app = express();
 const polling = bot.polling({
-    limit: 50,
     timeout: 60,
-    allowedUpdates: []
 });
 
 app.use(express.static('/app'));
@@ -27,7 +25,6 @@ app.use(express.static('/app'));
 // });
 polling.on('message', async message => {
     console.log('got message');
-
     if (!message.photo) {
         bot.sendMessage({chat_id: message.chat.id, text: `Expected photo`});
         return;
