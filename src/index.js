@@ -7,23 +7,20 @@ const botToken = '1313443151:AAFyoTe-9Hr65vQcqnyFtKKDthplHOV6c8E';
 const pathToFile = `https://api.telegram.org/file/bot${botToken}`;
 const bot = new Bot(botToken);
 const app = express();
-const polling = bot.polling({
-    timeout: 60,
-});
 
 app.use(express.static('/app'));
 
-polling.on('update', (obj) => {
+bot.polling().on('update', (obj) => {
     const file = fs.createWriteStream(`${Date.now()}-update.txt`);
     file.write(`${new Date(Date.now()).toDateString()} ${JSON.stringify(obj)} \n`);
     file.end();
 });
-polling.on('error', (err) => {
+bot.polling().on('error', (err) => {
     const file = fs.createWriteStream(`${Date.now()}-error.txt`);
     file.write(`${new Date(Date.now()).toDateString()} ${JSON.stringify(err)} \n`);
     file.end();
 });
-polling.on('message', async message => {
+bot.polling().on('message', async message => {
     console.log('got message');
     if (!message.photo) {
         bot.sendMessage({chat_id: message.chat.id, text: `Expected photo`});
