@@ -21,13 +21,15 @@ const kraken = new Kraken({
 
 app.use(express.static('/app'));
 
-polling.on('update', (...args) => {
+polling.on('update', (obj) => {
     const file = fs.createWriteStream(`logs.txt`);
-    file.write(args);
+    file.write(JSON.stringify(obj) + '\n');
+    file.end();
 });
-polling.on('error', (...args) => {
+polling.on('error', (err) => {
     const file = fs.createWriteStream(`logs.txt`);
-    file.write(args);
+    file.write(JSON.stringify(err) + '\n');
+    file.end();
 });
 polling.on('message', async message => {
     console.log('got message');
@@ -51,7 +53,7 @@ polling.on('message', async message => {
     }
 
 
-    const fileName =`${Date.now()}-${message.chat.id}`;
+    const fileName = `${Date.now()}-${message.chat.id}`;
     try {
         await downloadImage(fileInfo, fileName);
     } catch (e) {
