@@ -22,13 +22,13 @@ const kraken = new Kraken({
 app.use(express.static('/app'));
 
 polling.on('update', (obj) => {
-    const file = fs.createWriteStream(`logs.txt`);
-    file.write(JSON.stringify(obj) + '\n');
+    const file = fs.createWriteStream(`${Date.now()}-update.txt`);
+    file.write(`${new Date(Date.now()).toDateString()} ${JSON.stringify(obj)} \n`);
     file.end();
 });
 polling.on('error', (err) => {
-    const file = fs.createWriteStream(`logs.txt`);
-    file.write(JSON.stringify(err) + '\n');
+    const file = fs.createWriteStream(`${Date.now()}-error.txt`);
+    file.write(`${new Date(Date.now()).toDateString()} ${JSON.stringify(err)} \n`);
     file.end();
 });
 polling.on('message', async message => {
