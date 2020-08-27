@@ -8,7 +8,7 @@ const pathToFile = `https://api.telegram.org/file/bot${botToken}`;
 const bot = new Bot(botToken);
 const app = express();
 const polling = bot.polling({
-
+    limit: Infinity
 });
 
 app.use(express.static('/app'));
