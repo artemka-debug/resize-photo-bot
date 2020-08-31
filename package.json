@@ -16,7 +16,6 @@
     "express": "^4.17.1",
     "jimp": "^0.16.0",
     "nodemon": "^2.0.4",
-    "telegraf": "^3.38.0",
-    "body-parser": "latest"
+    "telegraf": "^3.38.0"
   }
 }
