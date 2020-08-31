@@ -77,8 +77,6 @@ async function downloadImage(fileInfo, fileName, ctx) {
 
 bot.launch({
     polling: {
-        timeout: 10,
-        limit: 1000000000000
     }
 });
 app.listen(process.env.PORT || 8080, () => {
