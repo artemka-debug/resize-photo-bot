@@ -49,7 +49,6 @@ bot.on('message', async ctx => {
         console.log(err ? err : 'error is not present');
     });
 });
-
 async function downloadImage(fileInfo, fileName, ctx) {
     let res;
 
@@ -76,8 +75,7 @@ async function downloadImage(fileInfo, fileName, ctx) {
 }
 
 bot.launch({
-    polling: {
-    }
+    polling: {}
 });
 app.listen(process.env.PORT || 8080, () => {
     console.log(`listening on port ${process.env.PORT || 8080}`);
