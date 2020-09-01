@@ -10,12 +10,12 @@ const app = express();
 
 app.use(express.static('/app'));
 
-bot.on('message', async ctx => {
+bot.on('text', async ctx => {
+    await ctx.reply('Expected photo');
+});
+
+bot.on('photo', async ctx => {
     console.log('got message');
-    if (!ctx.updateSubTypes.includes('photo')) {
-        await ctx.reply('Expected photo');
-        return;
-    }
 
     const fileName = `${Date.now()}`;
     try {
@@ -74,9 +74,7 @@ async function downloadImage(fileInfo, fileName, ctx) {
     })
 }
 
-bot.launch({
-    polling: {}
-});
+bot.launch().then(r => console.log('launch info', r));
 app.listen(process.env.PORT || 8080, () => {
     console.log(`listening on port ${process.env.PORT || 8080}`);
 });
