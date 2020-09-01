@@ -70,7 +70,7 @@ setInterval(async () => {
     console.log(res);
 }, 10000);
 
-bot.launch().then(r => console.log('launch info', r));
+bot.launch();
 app.listen(process.env.PORT || 8080, () => {
     console.log(`listening on port ${process.env.PORT || 8080}`);
 });
