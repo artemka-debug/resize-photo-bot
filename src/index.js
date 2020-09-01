@@ -25,15 +25,13 @@ bot.on('photo', async ctx => {
     }
 
     await ctx.reply(`Starting converting file`);
-    await Jimp.read(`${fileName}.jpeg`)
-        .then(lenna => {
-            return lenna
-                .resize(512, 512)
-                .write(`${fileName}.png`);
-        })
-        .catch(err => {
-            ctx.reply(JSON.stringify(err.message));
-        });
+    const res = await Jimp.read(`${fileName}.jpeg`);
+
+    try {
+        res.resize(512, 0).write(`${fileName}.png`);
+    } catch (err) {
+        await ctx.reply(JSON.stringify(err.message));
+    }
 
     await ctx.reply(`Converted`);
     try {
