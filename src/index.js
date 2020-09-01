@@ -15,6 +15,10 @@ bot.on('text', async ctx => {
     await ctx.reply('Expected photo');
 });
 
+app.get('/test', (req, res) => {
+    res.json({hi: 'hi artem'})
+});
+
 bot.on('photo', async ctx => {
     console.log('got message');
 
@@ -66,7 +70,7 @@ async function downloadImage(fileInfo, fileName, ctx) {
 }
 
 setInterval(async () => {
-    const res = await bot.telegram.getUpdates();
+    const res = await axios.get('/test');
     console.log(res);
 }, 10000);
 
