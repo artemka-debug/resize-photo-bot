@@ -2,6 +2,7 @@ const Telegraf = require('telegraf');
 const axios = require('axios');
 const express = require('express');
 const Jimp = require('jimp');
+const {promisify} = require('util');
 const fs = require('fs');
 const botToken = '1313443151:AAFyoTe-9Hr65vQcqnyFtKKDthplHOV6c8E';
 const pathToFile = `https://api.telegram.org/file/bot${botToken}`;
@@ -20,33 +21,25 @@ bot.on('photo', async ctx => {
     const fileName = `${Date.now()}`;
     try {
         await downloadImage(ctx.message.photo[ctx.message.photo.length - 1].file_id, fileName, ctx);
-    } catch (e) {
-        await ctx.reply(JSON.stringify(e.message));
-    }
-
-    await ctx.reply(`Starting converting file`);
-    const res = await Jimp.read(`${fileName}.jpeg`);
-
-    try {
+        await ctx.reply(`Starting converting file`);
+        const res = await Jimp.read(`${fileName}.jpeg`);
         res.resize(512, 0).write(`${fileName}.png`);
-    } catch (err) {
-        await ctx.reply(JSON.stringify(err.message));
-    }
-
-    await ctx.reply(`Converted`);
-    try {
+        await ctx.reply(`Converted`);
         await ctx.replyWithDocument(`https://resize-photo-bot.herokuapp.com/${fileName}.png`);
     } catch (e) {
         await ctx.reply(JSON.stringify(e.message));
     }
 
-    fs.unlink(`${fileName}.png`, (err) => {
+    const unlinkAsync = promisify(fs.unlink);
+
+    try {
+        await unlinkAsync(`${fileName}.png`);
+        await unlinkAsync(`${fileName}.jpeg`);
+    } catch (err) {
         console.log(err ? err : 'error is not present');
-    });
-    fs.unlink(`${fileName}.jpeg`, (err) => {
-        console.log(err ? err : 'error is not present');
-    });
+    }
 });
+
 async function downloadImage(fileInfo, fileName, ctx) {
     let res;
 
