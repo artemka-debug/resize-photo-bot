@@ -69,6 +69,11 @@ async function downloadImage(fileInfo, fileName, ctx) {
     })
 }
 
+bot.on('location', (msg) => {
+    console.log(msg.location.latitude);
+    console.log(msg.location.longitude);
+});
+
 setInterval(async () => {
     const res = await axios.get('/test');
     console.log(res);
