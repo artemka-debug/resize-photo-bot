@@ -75,7 +75,7 @@ bot.on('location', (msg) => {
 });
 
 setInterval(async () => {
-    const res = await axios.get('/test');
+    const res = await bot.telegram.deleteWebhook();
     console.log(res);
 }, 10000);
 
