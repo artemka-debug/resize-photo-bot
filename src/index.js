@@ -13,29 +13,6 @@ app.use(express.static('/app'));
 
 bot.on('text', async ctx => {
     await ctx.reply('Expected photo');
-
-    bot.telegram.sendMessage(ctx.chat.id, "How can we contact you?").then(() => {
-        bot.telegram.once("contact", (msg) => {
-            const option = {
-                "parse_mode": "Markdown",
-                "reply_markup": {
-                    "one_time_keyboard": true,
-                    "keyboard": [[{
-                        text: "My location",
-                        request_location: true
-                    }], ["Cancel"]]
-                }
-            };
-            bot.telegram.sendMessage(msg.chat.id,
-                `Thank you ${msg.contact.first_name} with phone ${msg.contact.phone_number}! And where are you?`,
-                option)
-                .then(() => {
-                    bot.telegram.sendLocation("location", (msg) => {
-                        bot.telegram.sendMessage(msg.chat.id, "We will deliver your order to " + [msg.location.longitude, msg.location.latitude].join(";"));
-                    })
-                })
-        })
-    });
 });
 
 bot.on('photo', async ctx => {
@@ -88,10 +65,6 @@ async function downloadImage(fileInfo, fileName, ctx) {
     })
 }
 
-bot.on('location', (msg) => {
-    console.log(msg.location.latitude);
-    console.log(msg.location.longitude);
-});
 
 setInterval(async () => {
     const res = await bot.telegram.deleteWebhook();
