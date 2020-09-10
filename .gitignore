@@ -5,3 +5,4 @@ file.png
 *.txt
 *.jpeg
 *.png
+.env
