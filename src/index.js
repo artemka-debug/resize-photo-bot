@@ -11,6 +11,9 @@ const app = express();
 
 app.use(express.static('/app'));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 app.post('/new-message',
     // MIDDLEWARE :))
