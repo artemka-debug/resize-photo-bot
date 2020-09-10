@@ -40,7 +40,7 @@ app.post('/new-message',
             const readFile = await Jimp.read(`${fileName}.jpeg`);
             readFile.resize(512, 512).write(`${fileName}.png`);
             await sendText(res, chatId, `Converted`);
-            await sendDocument(res, chatId, `https://4afb2432a8f6.ngrok.io/${fileName}.png`);
+            await sendDocument(res, chatId, `https://resize-photo-bot.herokuapp.com/${fileName}.png`);
         } catch (e) {
             await sendText(res, chatId, 'Error appeared when converting the file');
             res.send();
