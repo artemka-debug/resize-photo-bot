@@ -17,9 +17,9 @@ app.post('/new-message',
     async (req, res, next) => {
         const {message} = req.body;
 
-        console.log(message);
         if (!message.photo) {
             await sendText(res, message.chat.id, 'Expected photo');
+            res.send();
             return;
         }
 
@@ -31,26 +31,26 @@ app.post('/new-message',
     },
     // MAIN FUNCTION :))
     async (req, res) => {
-        console.log('got photo');
         const {chatId, photo} = req.tgBody;
 
         const fileName = `${Date.now()}`;
         try {
             await downloadImage(photo[photo.length - 1].file_id, fileName, chatId, res);
             await sendText(res, chatId, `Starting converting file`);
-            const res = await Jimp.read(`${fileName}.jpeg`);
-            res.resize(512, 0).write(`${fileName}.png`);
+            const readFile = await Jimp.read(`${fileName}.jpeg`);
+            readFile.resize(512, 512).write(`${fileName}.png`);
             await sendText(res, chatId, `Converted`);
             await sendDocument(res, chatId, `https://resize-photo-bot.herokuapp.com/${fileName}.png`);
         } catch (e) {
-            await sendText(res, chatId, JSON.stringify(e.response));
+            console.log(e);
+            await sendText(res, chatId, 'Error appeared when converting the file');
         }
 
         const unlinkAsync = promisify(fs.unlink);
 
         try {
-            await unlinkAsync(`${fileName}.png`);
             await unlinkAsync(`${fileName}.jpeg`);
+            await unlinkAsync(`${fileName}.png`);
         } catch (err) {
             console.log(err ? err : 'error is not present');
         }
@@ -90,7 +90,7 @@ async function sendText(res, chatId, output) {
                 text: output
             });
     } catch (e) {
-        console.log('ERROR', e);
+        console.log('ERROR', `TEXT ${output}`,  93,  e.response);
     }
 }
 
@@ -101,7 +101,7 @@ async function sendDocument(res, chatId, resizedImage) {
             document: resizedImage
         });
     } catch (e) {
-        console.log('ERROR', e);
+        console.log('ERROR', 104, e.response);
     }
 }
 
